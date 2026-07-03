@@ -1,3 +1,4 @@
+import 'package:firebase_class/Screen/login_Screen.dart';
 import 'package:firebase_class/const/all_colors.dart';
 import 'package:firebase_class/const/all_styles.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class _IntodractionPageState extends State<IntodractionPage> {
                       minimumSize: WidgetStatePropertyAll(Size(300, 55)),
                     ),
                     onPressed: () {
-
+                      Get.to(() =>LoginScreen());
                     },
                     child: Text(
                       'Get Started',

@@ -1,103 +1,78 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_class/Screen/Signin_Screen.dart';
+import 'package:firebase_class/Screen/login_Screen.dart';
 import 'package:firebase_class/Screen/products_screen.dart';
 import 'package:firebase_class/Screen/profile_screen.dart';
 import 'package:firebase_class/const/all_colors.dart';
 import 'package:firebase_class/services/firebase_auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import'package:get/get.dart';
 bool isPasswordHidden = true;
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  bool isloading = false;
+class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController emailcontroler = TextEditingController();
+  final TextEditingController passwordControler = TextEditingController();
+  final TextEditingController confirmpasswordController =
+  TextEditingController();
 
-
-  final TextEditingController emailControler = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
 
   final FirebaseAuthServices firebaseAuthServices = FirebaseAuthServices();
 
-  Future login() async {
+
+  Future register() async {
     setState(() {
-      isloading = true;
+      isLoading = true;
     });
+    String email = emailcontroler.text;
+    String password = passwordControler.text;
+    String confirmpassword = confirmpasswordController.text;
+
+    if (password != confirmpassword) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Password do not match")));
+
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
 
     try {
-      await firebaseAuthServices.login(
-        emailControler.text,
-        passwordController.text,
-      );
+      await firebaseAuthServices.register(email, password);
+
+      // signup er por uid FirebaseAuth.currentUser theke neya safe
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+
+      if (uid == null) {
+        throw Exception('User ID not found after registration');
+      }
+
+
+      if (!mounted) return;
 
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Login Successfully")));
+      ).showSnackBar(SnackBar(content: Text("Registration Successfully")));
 
-      setState(() {
-        isloading = false;
-      });
-
-
-     Get.to(() => ProductScreen()); //********************************
-
-    } on FirebaseAuthException catch (exception) {
-      String message;
-
-      switch (exception.code) {
-        case 'user-not-found':
-          message = 'No user found with this email.';
-          break;
-
-        case 'wrong-password':
-          message = 'Incorrect password.';
-          break;
-
-        case 'invalid-email':
-          message = 'Invalid email address.';
-          break;
-
-        case 'invalid-credential':
-          message = 'Invalid email or password.';
-          break;
-
-        case 'user-disabled':
-          message = 'This account has been disabled.';
-          break;
-
-        case 'too-many-requests':
-          message = 'Too many login attempts. Try again later.';
-          break;
-
-        case 'network-request-failed':
-          message = 'No internet connection.';
-          break;
-
-        default:
-          message = exception.message ?? 'Login failed.';
-      }
-
+     Get.to(() => ProductScreen());
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(message)));
+        ).showSnackBar(SnackBar(content: Text('Registration failed: $e')));
       }
-
-      // ScaffoldMessenger.of(
-      //   context,
-      // ).showSnackBar(SnackBar(content: Text("${exception.message}")));
     } finally {
       if (mounted) {
         setState(() {
-          isloading = false;
+          isLoading = false;
         });
       }
     }
@@ -115,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 58.0, left: 12),
               child: Text(
-                "Welcome\nBack!",
+                "Create an\naccount!",
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 36,
@@ -127,9 +102,9 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 40),
 
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: EdgeInsets.all(12.0),
               child: TextField(
-                controller: emailControler,
+                controller: emailcontroler,
                 decoration: InputDecoration(
                   prefixIcon:Padding(
                     padding: const EdgeInsets.all(12),
@@ -139,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 24,
                     ),
                   ),
-                  fillColor:AllColors.filed_greyColors,
+                  fillColor: AllColors.filed_greyColors,
                   filled: true,
                   hintText: "Username or Email",
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
@@ -156,9 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: TextField(
-                controller: passwordController,
+                controller: passwordControler,
                 obscureText: isPasswordHidden,
-
                 decoration: InputDecoration(
                   prefixIcon: Padding(
                     padding: const EdgeInsets.all(12),
@@ -181,30 +155,87 @@ class _LoginScreenState extends State<LoginScreen> {
                   fillColor:AllColors.filed_greyColors,
                   filled: true,
                   hintText: "Password",
-                  border: OutlineInputBorder( borderRadius: BorderRadius.circular(12),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
-                   color:AllColors.broderColors,
+                      color:AllColors.broderColors,
                       width: 1,
                     ),),
                 ),
-
               ),
             ),
 
             Padding(
-              padding: const EdgeInsets.only(right: 18.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text("Forgot password?", style: TextStyle(color: Colors.red)),
-                ],
+              padding: const EdgeInsets.all(12.0),
+              child: TextField(
+                controller: confirmpasswordController,
+                obscureText: isPasswordHidden,
+                decoration: InputDecoration(
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: SvgPicture.asset(
+                      "assets/images/svg/lack.svg",
+                      width: 24,
+                      height: 24,
+                    ),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      isPasswordHidden ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isPasswordHidden = !isPasswordHidden;
+                      });
+                    },
+                  ),
+                  fillColor:AllColors.filed_greyColors,
+                  filled: true,
+                  hintText: "Confirm Password",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color:AllColors.broderColors,
+                      width: 1,
+                    ),),
+                ),
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 18.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        color: AllColors.TextsColors,
+                        fontSize: 14,
+                      ),
+                      children: [
+                        const TextSpan(text: "By clicking the "),
+                        TextSpan(
+                          text: "Register",
+                          style: TextStyle(color: AllColors.primaryColors),
+                        ),
+                        TextSpan(text: " button, you agree",
+                          style: TextStyle(color:AllColors.TextsColors),),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                   Text(
+                    "to the public offer",
+                    style: TextStyle(color:AllColors.TextsColors),
+                    textAlign: TextAlign.left,
+                  ),
+                ],
+              )
             ),
 
             SizedBox(height: 30),
 
-            isloading
+            isLoading
                 ? Center(child: CircularProgressIndicator())
                 : Center(
               child: Padding(
@@ -225,10 +256,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
 
                   onPressed: () {
-                    login();
+                    register();
                   },
                   child: Text(
-                    "Login",
+                    "Create Account",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -244,15 +275,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "Create An Account?",
+                    "I Already Have an Account?",
                     style: TextStyle(color: Colors.black),
                   ),
                   GestureDetector(
                     onTap: () {
-                    Get.to(() => SignUpScreen());
+                     Get.to(() => LoginScreen());
                     },
                     child: Text(
-                      "Sign Up?",
+                      "Login?",
                       style: TextStyle(
                         color: Colors.red,
                         decoration: TextDecoration.underline,

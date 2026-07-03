@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "129667039338",
-    "project_id": "fir-class-14737",
-    "storage_bucket": "fir-class-14737.firebasestorage.app"
+    "project_number": "445914365318",
+    "project_id": "day16-b072f",
+    "storage_bucket": "day16-b072f.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:129667039338:android:55e67df284c51621f68a13",
+        "mobilesdk_app_id": "1:445914365318:android:f052e72c16817220bf4007",
         "android_client_info": {
           "package_name": "com.example.firebase_class"
         }
@@ -15,7 +15,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBN5sixTlYrB88eJ4r2C2b7pxnZDVblAaM"
+          "current_key": "AIzaSyD29bAUVrqVLwxk2jIBFp220V_XSDjbMQA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445914365318:android:7fdaa187ad7ae1b5bf4007",
+        "android_client_info": {
+          "package_name": "com.example.untitled"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD29bAUVrqVLwxk2jIBFp220V_XSDjbMQA"
         }
       ],
       "services": {
