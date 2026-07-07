@@ -1,4 +1,7 @@
+import 'package:firebase_class/Screen/cart_Screen.dart';
+import 'package:firebase_class/Screen/product_details_screen.dart';
 import 'package:firebase_class/models/Products_modelclass.dart';
+import 'package:firebase_class/services/cart_services.dart';
 import 'package:firebase_class/services/products_services.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +14,9 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  final ProductsServices productsServices = ProductsServices();
+  final ProductsServices productsServices= ProductsServices();
 
- // final CartServices cartServices = CartServices();
+ final CartServices cartServices = CartServices();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +24,7 @@ class _ProductScreenState extends State<ProductScreen> {
       appBar: AppBar(
         title: Text("Product Screen"),
 
-       /* actions: [
+        actions: [
           StreamBuilder(
             stream: cartServices.cartCount(),
             builder: (context, snapshot) {
@@ -51,7 +54,7 @@ class _ProductScreenState extends State<ProductScreen> {
               );
             },
           ),
-        ],*/
+        ],
       ),
       body: SingleChildScrollView(
         child: StreamBuilder<List<ProductModel>>(
@@ -70,55 +73,58 @@ class _ProductScreenState extends State<ProductScreen> {
               itemCount: product.length,
               itemBuilder: (_, index) {
                 var productModel = product[index];
-        
+
                 return Card(
                   elevation: 3,
-                  child: ListTile(
-                    title: Text("${product[index].name}"),
-                    subtitle: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-        
-                      children: [
-                        Image.network("${product[index].image}"),
-        
-                        Text(
-                          "${product[index].discription}",
-                          style: TextStyle(color: Colors.red),
-                        ),
-                        Text(
-                          "${product[index].price}",
-                          style: TextStyle(color: Colors.red),
-                        ),
-        
-                        SizedBox(height: 10),
-        
-                        /*GestureDetector(
-                          onTap: () async {
-                            await cartServices.addtoCard(productModel);
-        
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text("Product Cart Successfully"),
+                  child: InkWell(
+                    onTap: () {
+                      Get.to(() => ProductDetailsScreen(product: productModel));
+                    },
+                    child: ListTile(
+                      title: Text(productModel.name),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.network(productModel.image),
+
+                          Text(
+                            productModel.discription,
+                            style:  TextStyle(color: Colors.red),
+                          ),
+
+                          Text(
+                            "${productModel.price}",
+                            style: const TextStyle(color: Colors.red),
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          GestureDetector(
+                            onTap: () async {
+                              await cartServices.addtoCard(productModel);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Product Cart Successfully"),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 50,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            );
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 50,
-                            width: double.infinity,
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              "Add to Cart",
-                              style: TextStyle(color: Colors.white),
+                              child: const Text(
+                                "Add to Cart",
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                           ),
-                        ),*/
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );

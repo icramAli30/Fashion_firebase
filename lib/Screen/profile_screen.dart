@@ -165,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
 
-      appBar: AppBar(title: const Text('My Profile')),
+      appBar: AppBar(leading:BackButton(),),
       body: isloading
           ? const Center(child: CircularProgressIndicator())
           : SafeArea(
@@ -232,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.all(12),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Colors.red,
+                      color:AllColors.primaryColors,
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: const Text(
@@ -284,6 +284,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
 
           focusedBorder: OutlineInputBorder(
+
             borderRadius: BorderRadius.circular(12),
             borderSide:  BorderSide(
               color:AllColors.primaryColors,

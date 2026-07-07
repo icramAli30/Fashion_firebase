@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_class/Screen/bottom_nav_bar_screeb.dart';
 import 'package:firebase_class/Screen/login_Screen.dart';
 import 'package:firebase_class/Screen/products_screen.dart';
 import 'package:firebase_class/Screen/profile_screen.dart';
@@ -62,7 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         context,
       ).showSnackBar(SnackBar(content: Text("Registration Successfully")));
 
-     Get.to(() => ProductScreen());
+     Get.to(() => BottomNavBarScreen());
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(

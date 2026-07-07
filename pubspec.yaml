@@ -42,6 +42,7 @@ dependencies:
   http:
   image_picker:
   animated_bottom_navigation_bar:
+  flutter_staggered_grid_view:
 
 
 dev_dependencies:

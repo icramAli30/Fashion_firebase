@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_class/Screen/Signin_Screen.dart';
+import 'package:firebase_class/Screen/bottom_nav_bar_screeb.dart';
 import 'package:firebase_class/Screen/products_screen.dart';
 import 'package:firebase_class/Screen/profile_screen.dart';
 import 'package:firebase_class/const/all_colors.dart';
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
 
-     Get.to(() => ProductScreen()); //********************************
+     Get.to(() => BottomNavBarScreen()); //********************************
 
     } on FirebaseAuthException catch (exception) {
       String message;

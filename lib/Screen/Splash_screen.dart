@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_class/Screen/Intodraction_page.dart';
+import 'package:firebase_class/Screen/bottom_nav_bar_screeb.dart';
 import 'package:firebase_class/Screen/products_screen.dart';
 import 'package:firebase_class/Screen/profile_screen.dart';
 import 'package:firebase_class/services/firebase_auth_services.dart';
@@ -30,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
       print("Email: ${user?.email}");
 
       if (user != null) {
-        Get.off(() =>ProductScreen());///Nabigation Screen *******************************************
+        Get.off(() =>BottomNavBarScreen());///Nabigation Screen *******************************************
       } else {
         Get.off(() => IntodractionPage());
       }
