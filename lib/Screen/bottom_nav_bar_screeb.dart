@@ -61,7 +61,7 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
                   Icons.shopping_cart_outlined,
                   color: isCartSelected
                       ? AllColors.whiteColors
-                      : AllColors.secondaryColors,
+                      : AllColors.secondaryColors.withValues(alpha:0.8),
                 ),
 
                 if (count > 0)
