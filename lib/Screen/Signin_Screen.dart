@@ -118,6 +118,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   fillColor: AllColors.filed_greyColors,
                   filled: true,
                   hintText: "Username or Email",
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: AllColors.primaryColors,
+                      width: 2,
+                    ),
+                  ),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                       color:AllColors.broderColors,
@@ -130,13 +137,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
             SizedBox(height: 20),
 
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding:  EdgeInsets.all(12.0),
               child: TextField(
                 controller: passwordControler,
                 obscureText: isPasswordHidden,
                 decoration: InputDecoration(
                   prefixIcon: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(12),
                     child: SvgPicture.asset(
                       "assets/images/svg/lack.svg",
                       width: 24,
@@ -156,6 +163,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   fillColor:AllColors.filed_greyColors,
                   filled: true,
                   hintText: "Password",
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: AllColors.primaryColors,
+                      width: 2,
+                    ),
+                  ),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                       color:AllColors.broderColors,
@@ -166,13 +180,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
 
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: EdgeInsets.all(12.0),
               child: TextField(
                 controller: confirmpasswordController,
                 obscureText: isPasswordHidden,
                 decoration: InputDecoration(
                   prefixIcon: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding:  EdgeInsets.all(12),
                     child: SvgPicture.asset(
                       "assets/images/svg/lack.svg",
                       width: 24,
@@ -192,6 +206,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   fillColor:AllColors.filed_greyColors,
                   filled: true,
                   hintText: "Confirm Password",
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: AllColors.primaryColors,
+                      width: 2,
+                    ),
+                  ),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                       color:AllColors.broderColors,
@@ -240,11 +261,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ? Center(child: CircularProgressIndicator())
                 : Center(
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 58.0),
+                padding:  EdgeInsets.only(bottom: 58.0),
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll<Color>(
-                      Colors.red,
+                      AllColors.primaryColors,
                     ),
                     minimumSize: WidgetStatePropertyAll(Size(317, 55)),
                     shape: WidgetStatePropertyAll(
@@ -261,6 +282,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                   child: Text(
                     "Create Account",
+
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -270,14 +292,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
             SizedBox(height: 40),
 
             Padding(
-              padding: const EdgeInsets.only(right: 18.0),
+              padding:  EdgeInsets.only(right: 18.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     "I Already Have an Account?",
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color:AllColors.secondaryColors),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -286,9 +308,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: Text(
                       "Login?",
                       style: TextStyle(
-                        color: Colors.red,
+                        color: AllColors.primaryColors,
                         decoration: TextDecoration.underline,
-                        decorationColor: Colors.red,
+                        decorationColor:AllColors.primaryColors,
                       ),
                     ),
                   ),

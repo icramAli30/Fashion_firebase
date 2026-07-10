@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_class/models/User_modelclass.dart';
 import 'package:firebase_class/services/cloudnary_services.dart';
+import 'package:image_picker/image_picker.dart';
 
 
 class ProfileService {
@@ -59,20 +60,40 @@ class ProfileService {
     await _userDoc(uuid).set(UserModel.empty(email).toJson());
   }
 
-  Future<void> updateProfile(UserModel userModel, {File? imageFile}) async {
+  Future<void> updateProfile(
+      UserModel userModel, {
+        XFile? imageFile,
+      }) async {
+
     final uid = _uid;
 
     if (uid == null) {
-      throw Exception('No logged in user found');
+      throw Exception("User not found");
     }
 
     var updatedProfile = userModel;
 
     if (imageFile != null) {
       final imageUrl = await cloudniaryService.uploadImage(imageFile);
-      updatedProfile = userModel.copyWith(image: imageUrl);
+
+      updatedProfile = userModel.copyWith(
+        image: imageUrl,
+      );
     }
 
-    await _userDoc(uid).set(updatedProfile.toJson(), SetOptions(merge: true));
+    await _userDoc(uid).set(
+      updatedProfile.toJson(),
+      SetOptions(merge: true),
+    );
+  }
+
+  Stream<UserModel> getProfileStream() {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
+    return FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .snapshots()
+        .map((doc) => UserModel.fromJson(doc.data()!));
   }
 }

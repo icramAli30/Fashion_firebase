@@ -18,14 +18,17 @@ class _CartScreenState extends State<CartScreen> {
   final CartServices cartServices = CartServices();
   final OrderServioce orderServioce = OrderServioce();
 
+
   List<CartModel> cartItems = [];
   var subtotal = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AllColors.whiteColors,
       appBar: AppBar(
-        title: const Text(
+        backgroundColor:AllColors.whiteColors,
+        title:  Text(
           "My Cart",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -48,7 +51,7 @@ class _CartScreenState extends State<CartScreen> {
 
           cartItems = snapshot.data ?? [];
           if (cartItems.isEmpty) {
-            return const Center(
+            return  Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -77,6 +80,18 @@ class _CartScreenState extends State<CartScreen> {
             0,
                 (total, item) => total + (int.parse(item.price) * item.quantity),
           );
+          int deliveryFee;
+
+          if (subtotal >= 2000) {
+            deliveryFee = 0;
+          } else if (subtotal >= 1000) {
+            deliveryFee = 50;
+          } else if (subtotal >= 500) {
+            deliveryFee = 80;
+          } else {
+            deliveryFee = 120;
+          }
+          int total = subtotal + deliveryFee;
 
 
 
@@ -94,6 +109,7 @@ class _CartScreenState extends State<CartScreen> {
                     var cartModel = cartItems[index];
 
                     return Card(
+                      color: AllColors.whiteColors,
                       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
                       elevation: 4,
                       shape: RoundedRectangleBorder(
@@ -197,50 +213,87 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   ],
                 ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text("Subtotal"),
-                          Text(
-                            "৳ $subtotal",
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                child: Column(
+              children: [
 
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:AllColors.primaryColors,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 30,
-                          vertical: 15,
-                        ),
-                      ),
-                      onPressed: () async {
-                        await orderServioce.checkoutFunction(cartItems);
-                        await cartServices.clearCart();
+              Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Subtotal"),
+                  Text("৳ $subtotal"),
+                ],
+              ),
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => OrderScreens(),
-                          ),
-                        );
-                      },
-                      child:Text(
-                        "Order Now",
-                        style: TextStyle(color:AllColors.whiteColors),
-                      ),
+              const SizedBox(height: 8),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Delivery Fee"),
+                  Text(
+                    deliveryFee == 0 ? "Free" : "৳ $deliveryFee",
+                  ),
+                ],
+              ),
+
+              const Divider(),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Total",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
-                  ],
+                  ),
+                  Text(
+                    "৳ $total",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: AllColors.primaryColors,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 15),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AllColors.primaryColors,
+                  ),
+                  onPressed: () async {
+                    await orderServioce.checkoutFunction(
+                      cartItems,
+                      subtotal,
+                      deliveryFee,
+                      total,
+                    );
+
+                    await cartServices.clearCart();
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const OrderScreens(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Order Now",
+                    style: TextStyle(
+                      color: AllColors.whiteColors,
+                    ),
+                  ),
                 ),
+              ),
+            ],
+          ),
               )
             ],
           );

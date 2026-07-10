@@ -1,10 +1,13 @@
 import 'package:firebase_class/Screen/product_details_screen.dart';
+import 'package:firebase_class/Screen/profile_screen.dart';
 import 'package:firebase_class/const/all_colors.dart';
 import 'package:firebase_class/const/all_sizes.dart';
 import 'package:firebase_class/const/all_styles.dart';
 import 'package:firebase_class/models/Products_modelclass.dart';
+import 'package:firebase_class/models/User_modelclass.dart';
 import 'package:firebase_class/services/cart_services.dart';
 import 'package:firebase_class/services/products_services.dart';
+import 'package:firebase_class/services/profile_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -20,6 +23,8 @@ class ProductScreen1 extends StatefulWidget {
 class _ProductScreen1State extends State<ProductScreen1> {
   final ProductsServices productsServices = ProductsServices();
   final CartServices cartServices = CartServices();
+  final TextEditingController searchController = TextEditingController();
+  final ProfileService profileService = ProfileService();
 
   @override
   Widget build(BuildContext context) {
@@ -30,43 +35,51 @@ class _ProductScreen1State extends State<ProductScreen1> {
         centerTitle: true,
         leading: Icon(Icons.menu),
         title: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
+          padding:  EdgeInsets.only(top: 8.0),
           child: SvgPicture.asset(
             'assets/images/svg/textimage.svg',
             height: 35,
           ),
         ),
         actions: [
-          StreamBuilder(
-            stream: cartServices.cartCount(),
+          StreamBuilder<UserModel>(
+            stream: profileService.getProfileStream(),
             builder: (context, snapshot) {
-              final count = snapshot.data ?? 0;
 
-              return Stack(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      // Get.toNamed("/cart");
-                    },
-                    icon: Icon(Icons.shopping_cart_outlined),
+              if (!snapshot.hasData) {
+                return  Padding(
+                  padding: EdgeInsets.only(right: 15),
+                  child: CircleAvatar(
+                    child: Icon(Icons.person),
                   ),
-                  Positioned(
-                    child: Text(
-                      "${count}",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                );
+              }
+
+              final user = snapshot.data!;
+
+              return Padding(
+                padding: EdgeInsets.only(right: 15),
+                child: GestureDetector(
+                  onTap: () {
+                    Get.to(() =>  ProfileScreen());
+                  },
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundImage: user.image.isNotEmpty
+                        ? NetworkImage(user.image)
+                        : null,
+                    child: user.image.isEmpty
+                        ? Icon(Icons.person)
+                        : null,
                   ),
-                ],
+                ),
               );
             },
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(
+        padding:  EdgeInsets.only(
           right: 20,
           left: 20,
           top: 0.0,
@@ -89,25 +102,30 @@ class _ProductScreen1State extends State<ProductScreen1> {
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),
                             blurRadius: 10,
-                            offset: const Offset(0, 4),
+                            offset: Offset(0, 4),
                           ),
                         ],
                       ),
                       child: TextField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          setState(() {});
+                        },
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.only(top: 10),
+                          contentPadding:  EdgeInsets.only(top: 10),
                           border: InputBorder.none,
                           prefixIcon: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding:  EdgeInsets.all(8.0),
                             child: SvgPicture.asset(
                               'assets/images/svg/search.svg',
                             ),
                           ),
                           suffixIcon: IconButton(
                             onPressed: () {
-                              // Filter button action
+                              searchController.clear();
+                              setState(() {});
                             },
-                            icon: const Icon(Icons.mic, color: Colors.grey),
+                            icon:  Icon(Icons.mic, color: Colors.grey),
                           ),
                           hintText: 'Search',
                           hintStyle: AllStyles.titleTextStyles.copyWith(
@@ -130,22 +148,28 @@ class _ProductScreen1State extends State<ProductScreen1> {
                 stream: productsServices.getProducts(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return  Center(child: CircularProgressIndicator());
                   }
 
                   if (snapshot.hasError) {
                     return Center(child: Text(snapshot.error.toString()));
                   }
 
-                  final product = snapshot.data ?? [];
+                  final allProducts = snapshot.data ?? [];
+
+                  final product = allProducts.where((item) {
+                    return item.name
+                        .toLowerCase()
+                        .contains(searchController.text.toLowerCase());
+                  }).toList();
 
                   if (product.isEmpty) {
-                    return const Center(child: Text("No Products Found"));
+                    return  Center(child: Text("No Products Found"));
                   }
 
                   return MasonryGridView.builder(
                     gridDelegate:
-                        const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                         SliverSimpleGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                         ),
                     mainAxisSpacing: 10,
@@ -179,7 +203,7 @@ class _ProductScreen1State extends State<ProductScreen1> {
           children: [
             /// Product Image
             ClipRRect(
-              borderRadius: const BorderRadius.only(
+              borderRadius:  BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
               ),
@@ -188,7 +212,7 @@ class _ProductScreen1State extends State<ProductScreen1> {
                 height: index.isEven ? 180 : 260,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const SizedBox(
+                errorBuilder: (_, __, ___) =>  SizedBox(
                   height: 180,
                   child: Center(child: Icon(Icons.image_not_supported)),
                 ),
@@ -197,7 +221,7 @@ class _ProductScreen1State extends State<ProductScreen1> {
 
             /// Product Name
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding:  EdgeInsets.all(8),
               child: Text(
                 product.name,
                 maxLines: 1,
@@ -212,7 +236,7 @@ class _ProductScreen1State extends State<ProductScreen1> {
 
             /// Description
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding:  EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 product.discription,
                 maxLines: 2,
@@ -226,7 +250,7 @@ class _ProductScreen1State extends State<ProductScreen1> {
 
             /// Price
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding:  EdgeInsets.all(8),
               child: Text(
                 "৳ ${product.price}",
                 style: TextStyle(
@@ -237,17 +261,17 @@ class _ProductScreen1State extends State<ProductScreen1> {
               ),
             ),
 
-            const SizedBox(height: 8),
+             SizedBox(height: 8),
 
             /// Add to Cart Button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding:  EdgeInsets.symmetric(horizontal: 8),
               child: GestureDetector(
                 onTap: () async {
                   await cartServices.addtoCard(product);
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Product Cart Successfully")),
+                     SnackBar(content: Text("Product Cart Successfully")),
                   );
                 },
                 child: Container(
@@ -270,7 +294,7 @@ class _ProductScreen1State extends State<ProductScreen1> {
                         color: AllColors.primaryColors,
                         size: 20,
                       ),
-                      const SizedBox(width: 8),
+                       SizedBox(width: 8),
                       Text(
                         "Add to Cart",
                         style: TextStyle(
@@ -285,7 +309,7 @@ class _ProductScreen1State extends State<ProductScreen1> {
               ),
             ),
 
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
           ],
         ),
       ),

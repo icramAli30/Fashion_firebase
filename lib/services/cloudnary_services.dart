@@ -1,38 +1,37 @@
 import 'dart:convert';
-import 'dart:io';
-
-
 
 import 'package:firebase_class/config/cloudnary_config.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 class CloudniaryService {
-Future<String> uploadImage(File imageFile) async {
-final uri = Uri.parse(
-'https://api.cloudinary.com/v1_1/${CloudinaryConfig.cloudName}/image/upload',
-);
+  Future<String> uploadImage(XFile image) async {
+    final uri = Uri.parse(
+      "https://api.cloudinary.com/v1_1/${CloudinaryConfig.cloudName}/image/upload",
+    );
 
-final request = http.MultipartRequest('POST', uri)
-..fields['upload_preset'] = CloudinaryConfig.uploadPreset
-..files.add(
-await http.MultipartFile.fromPath('file', imageFile.path),
-);
+    final bytes = await image.readAsBytes();
 
-final response = await request.send();
-final responseBody = await response.stream.bytesToString();
+    final request = http.MultipartRequest("POST", uri)
+      ..fields["upload_preset"] = CloudinaryConfig.uploadPreset
+      ..files.add(
+        http.MultipartFile.fromBytes(
+          "file",
+          bytes,
+          filename: image.name,
+        ),
+      );
 
-if (response.statusCode != 200) {
-throw Exception('Image upload failed. Check cloud name and upload preset.');
-}
+    final response = await request.send();
 
-final data = jsonDecode(responseBody) as Map<String, dynamic>;
-final secureUrl = data['secure_url'] as String?;
+    final body = await response.stream.bytesToString();
 
-if (secureUrl == null || secureUrl.isEmpty) {
-throw Exception('Cloudinary did not return image URL');
-}
+    if (response.statusCode != 200) {
+      throw Exception(body);
+    }
 
-return secureUrl;
-}
+    final data = jsonDecode(body);
 
+    return data["secure_url"];
+  }
 }

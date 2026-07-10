@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_class/Screen/Signin_Screen.dart';
 import 'package:firebase_class/Screen/bottom_nav_bar_screeb.dart';
+import 'package:firebase_class/Screen/forget_password_screen.dart';
 import 'package:firebase_class/Screen/products_screen.dart';
 import 'package:firebase_class/Screen/profile_screen.dart';
 import 'package:firebase_class/const/all_colors.dart';
@@ -128,12 +129,12 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 40),
 
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding:  EdgeInsets.all(12.0),
               child: TextField(
                 controller: emailControler,
                 decoration: InputDecoration(
                   prefixIcon:Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding:  EdgeInsets.all(12),
                     child: SvgPicture.asset(
                       "assets/images/svg/User.svg",
                       width: 24,
@@ -143,6 +144,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   fillColor:AllColors.filed_greyColors,
                   filled: true,
                   hintText: "Username or Email",
+
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color:AllColors.primaryColors,
+                      width: 2,
+                    ),
+                  ),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                       color:AllColors.broderColors,
@@ -155,14 +164,14 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 20),
 
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding:  EdgeInsets.all(12.0),
               child: TextField(
                 controller: passwordController,
                 obscureText: isPasswordHidden,
 
                 decoration: InputDecoration(
                   prefixIcon: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding:  EdgeInsets.all(12),
                     child: SvgPicture.asset(
                       "assets/images/svg/lack.svg",
                       width: 24,
@@ -182,7 +191,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   fillColor:AllColors.filed_greyColors,
                   filled: true,
                   hintText: "Password",
-                  border: OutlineInputBorder( borderRadius: BorderRadius.circular(12),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color:AllColors.primaryColors,
+                      width: 2,
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                    color:AllColors.broderColors,
                       width: 1,
@@ -198,7 +215,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text("Forgot password?", style: TextStyle(color: Colors.red)),
+                  InkWell(
+                      onTap: () {
+                        Get.to(() => ForgetPasswordScreen());
+                      },
+
+
+                      child: Text("Forgot password?",
+                          style: TextStyle(color:AllColors.primaryColors))),
                 ],
               ),
             ),
@@ -209,11 +233,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ? Center(child: CircularProgressIndicator())
                 : Center(
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 58.0),
+                padding:  EdgeInsets.only(bottom: 58.0),
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll<Color>(
-                      Colors.red,
+                      AllColors.primaryColors,
                     ),
                     minimumSize: WidgetStatePropertyAll(Size(317, 55)),
                     shape: WidgetStatePropertyAll(
@@ -230,7 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: Text(
                     "Login",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: AllColors.whiteColors),
                   ),
                 ),
               ),
@@ -239,7 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 40),
 
             Padding(
-              padding: const EdgeInsets.only(right: 18.0),
+              padding:  EdgeInsets.only(right: 18.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,

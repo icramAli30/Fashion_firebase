@@ -1,8 +1,9 @@
-import 'dart:io';
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_class/models/Products_modelclass.dart';
 import 'package:firebase_class/services/cloudnary_services.dart';
+import 'package:image_picker/image_picker.dart';
 
 
 
@@ -14,12 +15,18 @@ class ProductsServices {
   CollectionReference<Map<String, dynamic>> get productCollection =>
       firebaseFirestore.collection("product");
 
-  Future addProduct(ProductModel productModel, File imagefile) async {
-    final imageurl = await cloudniaryService.uploadImage(imagefile!);
+  Future<void> addProduct(
+      ProductModel productModel,
+      XFile imageFile,
+      ) async {
+    final imageUrl = await cloudniaryService.uploadImage(imageFile);
 
     final document = productCollection.doc();
 
-    final newProduct = productModel.copyWith(id: document.id, image: imageurl);
+    final newProduct = productModel.copyWith(
+      id: document.id,
+      image: imageUrl,
+    );
 
     await document.set(newProduct.toJson());
   }
@@ -41,16 +48,23 @@ class ProductsServices {
     // });
   }
 
-  Future updateproducts(ProductModel productModel, File? imagefile) async {
+  Future<void> updateproducts(
+      ProductModel productModel,
+      XFile? imageFile,
+      ) async {
     var updatedData = productModel;
 
-    if (imagefile != null) {
-      final image = await cloudniaryService.uploadImage(imagefile!);
+    if (imageFile != null) {
+      final image = await cloudniaryService.uploadImage(imageFile);
 
-      updatedData = productModel.copyWith(image: image);
+      updatedData = productModel.copyWith(
+        image: image,
+      );
     }
 
-    await productCollection.doc(productModel.id).update(updatedData.toJson());
+    await productCollection
+        .doc(productModel.id)
+        .update(updatedData.toJson());
   }
 
   Future delete(String docId) async {

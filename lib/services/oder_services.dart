@@ -12,14 +12,13 @@ class OrderServioce {
   CollectionReference<Map<String, dynamic>> get orderCollection =>
       firebaseFirestore.collection("users").doc(uid).collection("orders");
 
-  Future checkoutFunction(List<CartModel> cartItems) async {
-    int total = 0;
-
+  Future checkoutFunction(List<CartModel> cartItems,
+      int subtotal,
+      int deliveryFee,
+      int total) async {
     List<Map<String, dynamic>> items = [];
 
     for (var item in cartItems) {
-      total += int.parse(item.price) * item.quantity;
-
       items.add(item.toJson());
     }
 
@@ -27,7 +26,10 @@ class OrderServioce {
 
     OrderModel orderModel = OrderModel(
       id: documets.id,
+      subtotal: subtotal,
+      deliveryFee: deliveryFee,
       total: total,
+      status: "Pending",
       items: items,
     );
 

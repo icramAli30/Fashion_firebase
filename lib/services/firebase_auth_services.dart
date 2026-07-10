@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+final FirebaseAuthServices authServices = FirebaseAuthServices();
+
 
 class FirebaseAuthServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -22,7 +23,16 @@ class FirebaseAuthServices {
     );
   }
 
+// forgetrpass wrod
+  Future<void> resetPassword(String email) async {
+    await FirebaseAuth.instance.sendPasswordResetEmail(
+      email: email,
+    );
+  }
+
+
   Future logout() async {
     await _auth.signOut();
   }
 }
+
