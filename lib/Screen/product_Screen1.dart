@@ -87,6 +87,7 @@ class _ProductScreen1State extends State<ProductScreen1> {
         ),
         child: Column(
           children: [
+
             SizedBox(
               height: 100,
               child: Row(
@@ -140,6 +141,7 @@ class _ProductScreen1State extends State<ProductScreen1> {
                 ],
               ),
             ),
+
             SizedBox(height: 2.0),
 
             // Ensure this is inside your Column
@@ -169,9 +171,9 @@ class _ProductScreen1State extends State<ProductScreen1> {
 
                   return MasonryGridView.builder(
                     gridDelegate:
-                         SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                        ),
+                    SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
                     itemCount: product.length,
@@ -182,6 +184,7 @@ class _ProductScreen1State extends State<ProductScreen1> {
                 },
               ),
             ),
+
           ],
         ),
       ),
