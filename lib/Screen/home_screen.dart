@@ -10,10 +10,13 @@ import '../const/all_colors.dart';
 import '../const/all_styles.dart';
 import '../models/User_modelclass.dart';
 
+import '../models/homemodel/carousel_slidermodel.dart';
 import '../services/cart_services.dart';
 import '../services/category_services.dart';
+import '../services/home_services/carousel_slider_Services.dart';
 import '../services/products_services.dart';
 import '../services/profile_services.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -27,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final CartServices cartServices = CartServices();
   final TextEditingController searchController = TextEditingController();
   final CategoryServices categoryService = CategoryServices();
+  final CarouselSliderServices carouselsliderService = CarouselSliderServices();
 
 
 
@@ -200,6 +204,59 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
               ),
+              ),
+              SizedBox(
+                height: 200,
+                child: StreamBuilder<List<CarouselSliderModel>>(
+                  stream: carouselsliderService.getCarouselslider(),
+                  builder: (context, snapshot) {
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(snapshot.error.toString()),
+                      );
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text("No Slider Found"),
+                      );
+                    }
+
+                    final carouselslider = snapshot.data!;
+
+                    return CarouselSlider.builder(
+                      itemCount: carouselslider.length,
+                      itemBuilder: (context, index, realIndex) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.network(
+                            carouselslider[index].image,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Center(
+                                child: Icon(Icons.broken_image),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      options: CarouselOptions(
+                        height: 200,
+                        autoPlay: true,
+                        enlargeCenterPage: true,
+                        viewportFraction: 0.9,
+                      ),
+                    );
+                  },
+                ),
               ),
 
 

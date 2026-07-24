@@ -43,6 +43,7 @@ dependencies:
   image_picker:
   animated_bottom_navigation_bar:
   flutter_staggered_grid_view:
+  carousel_slider:
 
 
 dev_dependencies:
